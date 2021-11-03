@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Chords</string>
+    <string name="intro_message">Add a new chord progression by tapping the + button</string>
+    <string name="new_chord_progression_activity_title">New Chord Progression</string>
+    <string name="new_chord_progression_activity_message">Create your chord progression here</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="backdrop_header">Select your chords:</string>
+</resources>
