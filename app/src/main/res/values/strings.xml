@@ -5,5 +5,6 @@
     <string name="new_chord_progression_activity_message">Create your chord progression here</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="backdrop_header">Select your chords:</string>
+    <string name="backdrop_header">Add your chords</string>
+    <string name="note_tag">Note</string>
 </resources>

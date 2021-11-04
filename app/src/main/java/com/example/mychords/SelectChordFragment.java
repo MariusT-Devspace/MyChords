@@ -1,16 +1,27 @@
 package com.example.mychords;
 
+import static com.example.mychords.R.layout.fragment_select_chord;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mychords.databinding.FragmentSelectChordBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +34,8 @@ import java.util.List;
 public class SelectChordFragment extends Fragment {
     private FragmentSelectChordBinding binding;
     List notes = new ArrayList();
+    String notesArray [] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    String qualityArray [] = {"Major", "Minor", "Suspended", "Augmented", "Diminished", "Half diminished"};
 
 
 
@@ -36,9 +49,7 @@ public class SelectChordFragment extends Fragment {
     private String mParam2;
 
     BottomSheetBehavior sheetBehavior;
-    public SelectChordFragment() {
-        super(R.layout.fragment_select_chord);
-    }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -77,6 +88,7 @@ public class SelectChordFragment extends Fragment {
         if(context != null){
             setEnterTransition(context.getString(R.string.hello_blank_fragment));
         }
+
         LinearLayout contentLayout = binding.contentLayout;
         sheetBehavior = BottomSheetBehavior.from(contentLayout);
         sheetBehavior.setFitToContents(false);
@@ -84,21 +96,20 @@ public class SelectChordFragment extends Fragment {
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);//initially state to fully expanded
         binding.addChordBtn.setOnClickListener((View c) -> toggleFilters());
 
-        notes.add("C");
-        notes.add("C#");
-        notes.add("D");
-        notes.add("D#");
-        notes.add("E");
-        notes.add("F");
-        notes.add("F#");
-        notes.add("G");
-        notes.add("G#");
-        notes.add("A");
+        for(int i = 0; i < notesArray.length; i++){
+            notes.add(notesArray[i]);
+        }
 
+        final ArrayAdapter adapter = new ArrayAdapter(this.getContext(), R.layout.list_item, notes);
+        AutoCompleteTextView textInputLayout = (AutoCompleteTextView) binding.menu.getEditText();
+        textInputLayout.setAdapter(adapter);
 
+        final ArrayAdapter adapter2 = new ArrayAdapter(this.getContext(), R.layout.list_item, qualityArray);
+        AutoCompleteTextView textInputLayout2 = (AutoCompleteTextView) binding.menu2.getEditText();
+        textInputLayout2.setAdapter(adapter2);
+        textInputLayout2.setText(qualityArray[0], false);
 
         return view;
-
     }
 
     private void toggleFilters(){

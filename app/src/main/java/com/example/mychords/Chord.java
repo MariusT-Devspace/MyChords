@@ -2,7 +2,7 @@ package com.example.mychords;
 
 public class Chord {
     private int note;
-    private String quality;
+    private String quality = "";
 
     Chord(int note, String quality){
         this.note = note;
