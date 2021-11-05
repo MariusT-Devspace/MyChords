@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:transitionName="shared_element_container">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_height="wrap_content"
@@ -17,7 +18,8 @@
         android:layout_height="?attr/actionBarSize"
         app:title="@string/app_name"
         app:menu="@menu/top_app_bar"
-        app:titleTextColor="@color/white"/>
+        app:titleTextColor="@color/white"
+        />
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView

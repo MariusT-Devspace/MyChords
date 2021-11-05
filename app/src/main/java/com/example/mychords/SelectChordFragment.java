@@ -1,30 +1,26 @@
 package com.example.mychords;
 
-import static com.example.mychords.R.layout.fragment_select_chord;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.ListFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mychords.databinding.FragmentSelectChordBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,10 +30,16 @@ import java.util.List;
 public class SelectChordFragment extends Fragment {
     private FragmentSelectChordBinding binding;
     List notes = new ArrayList();
-    String notesArray [] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-    String qualityArray [] = {"Major", "Minor", "Suspended", "Augmented", "Diminished", "Half diminished"};
-
-
+    final String notesArray [] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    final String qualityArray[] = {"Major", "Minor", "Suspended", "Augmented", "Diminished", "Half diminished"};
+    final String qualityAbbrArray[] = {"", "m", "sus", "aug", "dim", "m7b5"};
+    Map<String, String> qualityDictionary;
+    int noteSelection;
+    List<Chord> chords = new ArrayList<Chord>();
+    private static final int SPAN_COUNT = 2;
+    CustomAdapter customAdapter;
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,6 +51,7 @@ public class SelectChordFragment extends Fragment {
     private String mParam2;
 
     BottomSheetBehavior sheetBehavior;
+    ;
 
 
     /**
@@ -76,6 +79,7 @@ public class SelectChordFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -94,7 +98,8 @@ public class SelectChordFragment extends Fragment {
         sheetBehavior.setFitToContents(false);
         sheetBehavior.setHideable(false);//prevents the boottom sheet from completely hiding off the screen
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);//initially state to fully expanded
-        binding.addChordBtn.setOnClickListener((View c) -> toggleFilters());
+        binding.createChordBtn.setOnClickListener((View c) -> toggleFilters());
+        qualityDictionary = new HashMap<String, String>();
 
         for(int i = 0; i < notesArray.length; i++){
             notes.add(notesArray[i]);
@@ -108,7 +113,34 @@ public class SelectChordFragment extends Fragment {
         AutoCompleteTextView textInputLayout2 = (AutoCompleteTextView) binding.menu2.getEditText();
         textInputLayout2.setAdapter(adapter2);
         textInputLayout2.setText(qualityArray[0], false);
+        for (int i = 0; i < qualityArray.length; i++){
+            qualityDictionary.put(qualityArray[i], qualityAbbrArray[i]);
+        }
+        customAdapter = new CustomAdapter(chords);
+        recyclerView = (RecyclerView)  binding.recyclerView;
+        recyclerView.setAdapter(customAdapter);
+        layoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+        recyclerView.setLayoutManager(layoutManager);
 
+        textInputLayout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                noteSelection = position;
+            }
+        });
+
+        binding.addChordBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFilters();
+                String quality = qualityDictionary.get(binding.menu2.getEditText().getText().toString());
+                Chord newChord = new Chord(noteSelection, notesArray[noteSelection], quality);
+                chords.add(newChord);
+                customAdapter.notifyDataSetChanged();
+
+            }
+        });
         return view;
     }
 
