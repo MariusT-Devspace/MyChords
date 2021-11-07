@@ -22,6 +22,8 @@ public class NewChordProgressionActivity extends AppCompatActivity {
         binding = ActivityNewChordProgressionBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        // Toolbar
         Toolbar toolbar = (Toolbar) binding.topAppBar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

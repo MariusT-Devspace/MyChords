@@ -1,6 +1,5 @@
 package com.example.mychords;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,10 @@ import java.util.Map;
  */
 public class SelectChordFragment extends Fragment {
     private FragmentSelectChordBinding binding;
+
+    BottomSheetBehavior sheetBehavior;
+
+    // Chords arrays / lists
     List notes = new ArrayList();
     final String notesArray [] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
     final String qualityArray[] = {"Major", "Minor", "Suspended", "Augmented", "Diminished", "Half diminished"};
@@ -36,11 +39,15 @@ public class SelectChordFragment extends Fragment {
     Map<String, String> qualityDictionary;
     int noteSelection;
     List<Chord> chords = new ArrayList<Chord>();
-    private static final int SPAN_COUNT = 2;
-    CustomAdapter customAdapter;
-    RecyclerView recyclerView;
+
+    private static final int SPAN_COUNT = 2; // GridView span count
+
+    // RecyclerView variables
+    CustomAdapter customAdapter;    // RecyclerView adapter
+    RecyclerView recyclerView;      // Chords grid
     RecyclerView.LayoutManager layoutManager;
 
+    // Params
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -49,9 +56,6 @@ public class SelectChordFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    BottomSheetBehavior sheetBehavior;
-    ;
 
 
     /**
@@ -86,64 +90,65 @@ public class SelectChordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       binding = FragmentSelectChordBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
-        Context context = getContext();
-        if(context != null){
-            setEnterTransition(context.getString(R.string.hello_blank_fragment));
-        }
+        binding = FragmentSelectChordBinding.inflate(inflater, container, false);
 
+        //View Binding
+        View view = binding.getRoot();
+
+        qualityDictionary = new HashMap<String, String>();
+
+        // Sheet behavior
         LinearLayout contentLayout = binding.contentLayout;
         sheetBehavior = BottomSheetBehavior.from(contentLayout);
         sheetBehavior.setFitToContents(false);
         sheetBehavior.setHideable(false);//prevents the boottom sheet from completely hiding off the screen
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);//initially state to fully expanded
-        binding.createChordBtn.setOnClickListener((View c) -> toggleFilters());
-        qualityDictionary = new HashMap<String, String>();
 
+        // Initialize notes list
         for(int i = 0; i < notesArray.length; i++){
             notes.add(notesArray[i]);
         }
 
-        final ArrayAdapter adapter = new ArrayAdapter(this.getContext(), R.layout.list_item, notes);
-        AutoCompleteTextView textInputLayout = (AutoCompleteTextView) binding.menu.getEditText();
-        textInputLayout.setAdapter(adapter);
-
-        final ArrayAdapter adapter2 = new ArrayAdapter(this.getContext(), R.layout.list_item, qualityArray);
-        AutoCompleteTextView textInputLayout2 = (AutoCompleteTextView) binding.menu2.getEditText();
-        textInputLayout2.setAdapter(adapter2);
-        textInputLayout2.setText(qualityArray[0], false);
+        // Initialize qualityDictionary
         for (int i = 0; i < qualityArray.length; i++){
             qualityDictionary.put(qualityArray[i], qualityAbbrArray[i]);
         }
+
+        // Adapters
+        final ArrayAdapter adapter = new ArrayAdapter(this.getContext(), R.layout.list_item, notes);
+        AutoCompleteTextView textInputLayout = (AutoCompleteTextView) binding.menu.getEditText();
+        textInputLayout.setAdapter(adapter);
+        final ArrayAdapter adapter2 = new ArrayAdapter(this.getContext(), R.layout.list_item, qualityArray);
+        AutoCompleteTextView textInputLayout2 = (AutoCompleteTextView) binding.menu2.getEditText();
+        textInputLayout2.setAdapter(adapter2);
+
+        // Set default values for drop menus
+        textInputLayout.setText(notesArray[0], false);
+        textInputLayout2.setText(qualityArray[0], false);
+
+        // RecyclerView
         customAdapter = new CustomAdapter(chords);
         recyclerView = (RecyclerView)  binding.recyclerView;
         recyclerView.setAdapter(customAdapter);
         layoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);
 
-        textInputLayout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Listeners
+        binding.createChordBtn.setOnClickListener((View c) -> toggleFilters());
+        textInputLayout.setOnItemClickListener((parent, view1, position, id) -> noteSelection = position);
+        binding.addChordBtn.setOnClickListener(v -> {
+            toggleFilters();
+            String quality = qualityDictionary.get(binding.menu2.getEditText().getText().toString());
+            Chord newChord = new Chord(noteSelection, notesArray[noteSelection], quality);
+            chords.add(newChord);
+            customAdapter.notifyDataSetChanged();
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                noteSelection = position;
-            }
         });
 
-        binding.addChordBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleFilters();
-                String quality = qualityDictionary.get(binding.menu2.getEditText().getText().toString());
-                Chord newChord = new Chord(noteSelection, notesArray[noteSelection], quality);
-                chords.add(newChord);
-                customAdapter.notifyDataSetChanged();
-
-            }
-        });
         return view;
     }
 
+    // Toggle filters layout
     private void toggleFilters(){
         if(sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
             sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
@@ -152,4 +157,5 @@ public class SelectChordFragment extends Fragment {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
+
 }

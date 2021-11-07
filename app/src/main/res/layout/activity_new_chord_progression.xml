@@ -7,7 +7,7 @@
     tools:context=".NewChordProgressionActivity"
     android:orientation="vertical">
 
-
+    <!-- Appbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_height="wrap_content"
@@ -23,14 +23,11 @@
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Fragment -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.example.mychords.SelectChordFragment" />
-
-
-
-
 
 </LinearLayout>
