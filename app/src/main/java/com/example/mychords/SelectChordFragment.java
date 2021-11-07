@@ -29,7 +29,7 @@ import java.util.Map;
 public class SelectChordFragment extends Fragment {
     private FragmentSelectChordBinding binding;
 
-    BottomSheetBehavior sheetBehavior;
+    static BottomSheetBehavior sheetBehavior;
 
     // Chords arrays / lists
     List notes = new ArrayList();
@@ -67,7 +67,7 @@ public class SelectChordFragment extends Fragment {
      * @return A new instance of fragment SelectChordFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SelectChordFragment newInstance(String param1, String param2) {
+    public SelectChordFragment newInstance(String param1, String param2) {
         SelectChordFragment fragment = new SelectChordFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -134,7 +134,7 @@ public class SelectChordFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         // Listeners
-        binding.createChordBtn.setOnClickListener((View c) -> toggleFilters());
+
         textInputLayout.setOnItemClickListener((parent, view1, position, id) -> noteSelection = position);
         binding.addChordBtn.setOnClickListener(v -> {
             toggleFilters();
@@ -149,7 +149,7 @@ public class SelectChordFragment extends Fragment {
     }
 
     // Toggle filters layout
-    private void toggleFilters(){
+    protected static void toggleFilters(){
         if(sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
             sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
         }

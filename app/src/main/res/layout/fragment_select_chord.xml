@@ -123,7 +123,7 @@
                     />
 
                 <!-- Create chord button -->
-                <com.google.android.material.button.MaterialButton
+            <!--    <com.google.android.material.button.MaterialButton
                     android:id="@+id/create_chord_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
                     android:backgroundTint="?attr/colorAccent"
                     android:layout_gravity="right|bottom"
                     />
-
+            -->
             </LinearLayout>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
