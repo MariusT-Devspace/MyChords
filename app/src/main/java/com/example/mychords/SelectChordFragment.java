@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
@@ -14,6 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mychords.databinding.FragmentSelectChordBinding;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class SelectChordFragment extends Fragment {
+    // Binding
     private FragmentSelectChordBinding binding;
 
     static BottomSheetBehavior sheetBehavior;
@@ -40,12 +43,12 @@ public class SelectChordFragment extends Fragment {
     int noteSelection;
     List<Chord> chords = new ArrayList<Chord>();
 
-    private static final int SPAN_COUNT = 2; // GridView span count
+    private static final int SPAN_COUNT = 5; // GridView span count
 
     // RecyclerView variables
     CustomAdapter customAdapter;    // RecyclerView adapter
     RecyclerView recyclerView;      // Chords grid
-    RecyclerView.LayoutManager layoutManager;
+    FlexboxLayoutManager layoutManager;
 
     // Params
     // TODO: Rename parameter arguments, choose names that match
@@ -115,10 +118,10 @@ public class SelectChordFragment extends Fragment {
         }
 
         // Adapters
-        final ArrayAdapter adapter = new ArrayAdapter(this.getContext(), R.layout.list_item, notes);
+        final ArrayAdapter adapter = new ArrayAdapter(this.getContext(), R.layout.dropdown_list_item, notes);
         AutoCompleteTextView textInputLayout = (AutoCompleteTextView) binding.menu.getEditText();
         textInputLayout.setAdapter(adapter);
-        final ArrayAdapter adapter2 = new ArrayAdapter(this.getContext(), R.layout.list_item, qualityArray);
+        final ArrayAdapter adapter2 = new ArrayAdapter(this.getContext(), R.layout.dropdown_list_item, qualityArray);
         AutoCompleteTextView textInputLayout2 = (AutoCompleteTextView) binding.menu2.getEditText();
         textInputLayout2.setAdapter(adapter2);
 
@@ -130,11 +133,13 @@ public class SelectChordFragment extends Fragment {
         customAdapter = new CustomAdapter(chords);
         recyclerView = (RecyclerView)  binding.recyclerView;
         recyclerView.setAdapter(customAdapter);
-        layoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+
+        layoutManager = new FlexboxLayoutManager(getActivity());
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setJustifyContent(JustifyContent.FLEX_START);
         recyclerView.setLayoutManager(layoutManager);
 
         // Listeners
-
         textInputLayout.setOnItemClickListener((parent, view1, position, id) -> noteSelection = position);
         binding.addChordBtn.setOnClickListener(v -> {
             toggleFilters();
@@ -142,7 +147,6 @@ public class SelectChordFragment extends Fragment {
             Chord newChord = new Chord(noteSelection, notesArray[noteSelection], quality);
             chords.add(newChord);
             customAdapter.notifyDataSetChanged();
-
         });
 
         return view;
