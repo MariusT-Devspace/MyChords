@@ -11,21 +11,21 @@ public class Chord {
         this.quality = quality;
     }
 
-    private void setNote(int note){
+    protected void setNote(int note){
         this.notePosition = note;
     }
 
-    private void setQuality(String quality){
+    protected void setQuality(String quality){
         this.quality = quality;
     }
 
-    public int getNotePosition() {
+    protected int getNotePosition() {
         return notePosition;
     }
 
-    public String getQuality(){
+    protected String getQuality(){
         return quality;
     }
 
-    public String getChord(){return (note + quality);}
+    protected String getChord(){return (note + quality);}
 }
